@@ -1,0 +1,29 @@
+ESP32 Multisensory Alarm
+
+Copyright (c) 2026 Doruk
+
+This repository contains software, hardware designs, documentation,
+and media under different open-source licenses.
+
+Firmware
+--------
+Files under firmware/ are licensed under the MIT License.
+See LICENSES/MIT.txt.
+
+Hardware
+--------
+Hardware designs, schematics, and CAD files under hardware/ are
+licensed under CERN Open Hardware Licence Version 2 - Permissive
+(CERN-OHL-P-2.0).
+
+See LICENSES/CERN-OHL-P-2.0.txt.
+
+Documentation and Media
+-----------------------
+README documentation and original media under media/ are licensed
+under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+See LICENSES/CC-BY-4.0.txt.
+
+Third-party components, libraries, trademarks, and referenced
+products remain subject to their respective owners' licenses.
