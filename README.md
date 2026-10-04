@@ -72,20 +72,12 @@ The firmware handles:
 - status LEDs
 - physical buttons
 
-# Contributing
+## License
+
+This is an open-source hardware and software project.
+
+- **Firmware:** [MIT License](LICENSES/MIT.txt)
+- **Hardware and CAD:** [CERN-OHL-P-2.0](LICENSES/CERN-OHL-P-2.0.txt)
+- **Documentation and original media:** [CC BY 4.0](LICENSES/CC-BY-4.0.txt)
 
 Contributions are welcome.
-
-If you find a bug or have an improvement:
-
-1. Open an issue describing the problem or proposed change.
-2. Fork the repository.
-3. Create a branch for your change.
-4. Submit a pull request.
-
-Please avoid committing credentials, generated build files, or
-proprietary third-party files.
-
-By submitting a contribution, you agree that your contribution may be
-distributed under the license applicable to the part of the project
-being modified.
