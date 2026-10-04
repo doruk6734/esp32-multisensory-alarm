@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Doruk
+// Copyright (c) 2026 Doruk Garip
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
