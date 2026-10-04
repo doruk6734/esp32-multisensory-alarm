@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Doruk
+// Copyright (c) 2026 Doruk Garip
 
 #define BLYNK_TEMPLATE_ID "TMPL60t_yvDvl"
 #define BLYNK_TEMPLATE_NAME "Quickstart Template"
