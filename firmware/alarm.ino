@@ -1,6 +1,5 @@
-#define BLYNK_TEMPLATE_ID " "
+#define BLYNK_TEMPLATE_ID "TMPL60t_yvDvl"
 #define BLYNK_TEMPLATE_NAME "Quickstart Template"
-#define BLYNK_AUTH_TOKEN " "
 
 #define BLYNK_PRINT Serial
 
@@ -15,8 +14,8 @@
 // WIFI
 // ====================================================
 
-char ssid[] = " "; //WIFI name
-char pass[] = " "; //WIFI password
+char ssid[] = "";
+char pass[] = "";
 
 bool wifiWasConnected = false;
 
@@ -25,7 +24,6 @@ unsigned long lastBlynkAttempt = 0;
 
 const unsigned long WIFI_RETRY_INTERVAL = 10000;
 const unsigned long BLYNK_RETRY_INTERVAL = 10000;
-
 
 // ====================================================
 // LCD
@@ -46,7 +44,6 @@ unsigned long previousLCDRecovery = 0;
 
 char lastLCDLine0[17] = "";
 char lastLCDLine1[17] = "";
-
 
 // ====================================================
 // BUTTONS
@@ -74,9 +71,8 @@ Button button2;
 bool bothButtonsHolding = false;
 unsigned long bothButtonsStart = 0;
 
-
 // ====================================================
-// 3W LIGHTS
+// 10W LED / MX1508
 // ====================================================
 
 #define LIGHT_1_PIN 4
@@ -85,6 +81,8 @@ unsigned long bothButtonsStart = 0;
 const int LIGHT_PWM_FREQUENCY = 1000;
 const int LIGHT_PWM_RESOLUTION = 8;
 
+// 178 / 255 = 69.8% maximum duty cycle
+const uint32_t LIGHT_MAX_PWM = 160;
 
 // ====================================================
 // FAN
@@ -94,7 +92,6 @@ const int LIGHT_PWM_RESOLUTION = 8;
 
 const int FAN_PWM_FREQUENCY = 20000;
 const int FAN_PWM_RESOLUTION = 8;
-
 
 // ====================================================
 // BUZZER
@@ -106,7 +103,6 @@ const int FAN_PWM_RESOLUTION = 8;
 
 const int BUZZER_FREQUENCY = 2200;
 const int BUZZER_PWM_RESOLUTION = 8;
-
 
 // ====================================================
 // STATUS LEDS
@@ -156,7 +152,6 @@ const int statusPatternLEDCount =
   sizeof(statusPatternLEDs) /
   sizeof(statusPatternLEDs[0]);
 
-
 // ====================================================
 // BLYNK VALUES
 // ====================================================
@@ -198,7 +193,6 @@ double intensityLgt2 = 0.0;
 // Seconds from midnight as String
 String alarmTime = "";
 
-
 // ====================================================
 // BLYNK SYNC
 // ====================================================
@@ -213,7 +207,6 @@ unsigned long previousBlynkResync = 0;
 const unsigned long BLYNK_SYNC_TIMEOUT = 8000;
 const unsigned long BLYNK_RESYNC_INTERVAL = 10000;
 
-
 // ====================================================
 // BLYNK DATA LED ANIMATION
 // ====================================================
@@ -223,7 +216,6 @@ unsigned long dataPatternStart = 0;
 
 const unsigned long DATA_PATTERN_STEP = 90;
 const int DATA_PATTERN_STEPS = 8;
-
 
 // ====================================================
 // CLOCK
@@ -235,14 +227,12 @@ bool ntpConfigured = false;
 
 const int ALARM_TRIGGER_WINDOW = 60;
 
-
 // ====================================================
 // LCD PAGE
 // ====================================================
 
 bool showClockPage = true;
 int currentPage = -1;
-
 
 // ====================================================
 // ALARM STATE
@@ -259,14 +249,12 @@ const unsigned long ALARM_REPEAT_GAP = 10000;
 
 int lastAlarmDateKey = -1;
 
-
 // ====================================================
 // SMOOTH LIGHT BREATHING STATE
 // ====================================================
 
 double lightBreathPhase = 0.0;
 unsigned long previousLightBreathUpdate = 0;
-
 
 // ====================================================
 // GENERAL HELPERS
@@ -280,14 +268,14 @@ double clamp01(double value)
   return value;
 }
 
-
 uint32_t intensityToPWM(double intensity)
 {
   intensity = clamp01(intensity);
 
-  return (uint32_t)(255.0 * intensity + 0.5);
+  return (uint32_t)(
+    LIGHT_MAX_PWM * intensity + 0.5
+  );
 }
-
 
 // ====================================================
 // LCD HELPERS
@@ -298,7 +286,6 @@ void invalidateLCDCache()
   lastLCDLine0[0] = '\0';
   lastLCDLine1[0] = '\0';
 }
-
 
 void writeLCDLine(
   int row,
@@ -332,7 +319,6 @@ void writeLCDLine(
   }
 }
 
-
 // ====================================================
 // BLYNK STATE
 // ====================================================
@@ -348,7 +334,6 @@ bool allBlynkDataReceived()
   return true;
 }
 
-
 bool alarmDataReady()
 {
   return
@@ -359,13 +344,11 @@ bool alarmDataReady()
     receivedPins[9];
 }
 
-
 void startDataPattern()
 {
   dataPatternActive = true;
   dataPatternStart = millis();
 }
-
 
 // ====================================================
 // BLYNK CALLBACK
@@ -391,7 +374,6 @@ BLYNK_WRITE_DEFAULT()
       );
       break;
 
-
     case 1:
       light1Active = param.asInt();
 
@@ -400,7 +382,6 @@ BLYNK_WRITE_DEFAULT()
         light1Active
       );
       break;
-
 
     case 2:
       light2Active = param.asInt();
@@ -411,7 +392,6 @@ BLYNK_WRITE_DEFAULT()
       );
       break;
 
-
     case 3:
       repeat = param.asInt();
 
@@ -420,7 +400,6 @@ BLYNK_WRITE_DEFAULT()
         repeat
       );
       break;
-
 
     case 4:
       duration = param.asInt();
@@ -431,7 +410,6 @@ BLYNK_WRITE_DEFAULT()
       );
       break;
 
-
     case 5:
       intensityVib = param.asDouble();
 
@@ -440,7 +418,6 @@ BLYNK_WRITE_DEFAULT()
         intensityVib
       );
       break;
-
 
     case 6:
       intensityLgt = param.asDouble();
@@ -451,7 +428,6 @@ BLYNK_WRITE_DEFAULT()
       );
       break;
 
-
     case 7:
       intensityLgt1 = param.asDouble();
 
@@ -461,7 +437,6 @@ BLYNK_WRITE_DEFAULT()
       );
       break;
 
-
     case 8:
       intensityLgt2 = param.asDouble();
 
@@ -470,7 +445,6 @@ BLYNK_WRITE_DEFAULT()
         intensityLgt2
       );
       break;
-
 
     case 9:
       alarmTime = param.asStr();
@@ -482,16 +456,12 @@ BLYNK_WRITE_DEFAULT()
       break;
   }
 
-
   bool previousAllData =
     allDataReceived;
-
 
   allDataReceived =
     allBlynkDataReceived();
 
-
-  // Only do the chase after a complete valid sync.
   if (allDataReceived) {
 
     if (
@@ -504,7 +474,6 @@ BLYNK_WRITE_DEFAULT()
   }
 }
 
-
 // ====================================================
 // BLYNK CONNECTED
 // ====================================================
@@ -515,11 +484,9 @@ BLYNK_CONNECTED()
   Serial.println("BLYNK CONNECTED");
   Serial.println("Retrieving V0-V9");
 
-
   for (int i = 0; i < 10; i++) {
     receivedPins[i] = false;
   }
-
 
   allDataReceived = false;
   syncTimedOut = false;
@@ -528,7 +495,6 @@ BLYNK_CONNECTED()
 
   blynkSyncStart = millis();
   previousBlynkResync = millis();
-
 
   Blynk.syncVirtual(
     V0,
@@ -544,7 +510,6 @@ BLYNK_CONNECTED()
   );
 }
 
-
 // ====================================================
 // NTP
 // ====================================================
@@ -554,7 +519,6 @@ void configureNTP()
   if (ntpConfigured)
     return;
 
-
   configTime(
     GMT_OFFSET,
     0,
@@ -562,17 +526,13 @@ void configureNTP()
     "time.google.com"
   );
 
-
   ntpConfigured = true;
-
 
   Serial.println(
     "NTP configured"
   );
 
-
   struct tm timeInfo;
-
 
   if (
     getLocalTime(
@@ -597,7 +557,6 @@ void configureNTP()
   }
 }
 
-
 // ====================================================
 // NETWORK MANAGEMENT
 // ====================================================
@@ -612,11 +571,9 @@ void attemptBlynkConnection()
     return;
   }
 
-
   Serial.println(
     "Trying Blynk..."
   );
-
 
   if (
     Blynk.connect(1000)
@@ -635,7 +592,6 @@ void attemptBlynkConnection()
   }
 }
 
-
 void maintainConnections(
   unsigned long now
 )
@@ -643,7 +599,6 @@ void maintainConnections(
   bool wifiConnected =
     WiFi.status() ==
     WL_CONNECTED;
-
 
   if (
     wifiConnected &&
@@ -655,7 +610,6 @@ void maintainConnections(
       "WiFi connected"
     );
 
-
     Serial.print(
       "IP: "
     );
@@ -664,13 +618,10 @@ void maintainConnections(
       WiFi.localIP()
     );
 
-
     configureNTP();
-
 
     lastBlynkAttempt = 0;
   }
-
 
   if (
     !wifiConnected &&
@@ -682,10 +633,8 @@ void maintainConnections(
     );
   }
 
-
   wifiWasConnected =
     wifiConnected;
-
 
   if (!wifiConnected) {
 
@@ -700,9 +649,7 @@ void maintainConnections(
         "Retrying WiFi..."
       );
 
-
       WiFi.disconnect();
-
 
       WiFi.begin(
         ssid,
@@ -712,7 +659,6 @@ void maintainConnections(
 
     return;
   }
-
 
   if (Blynk.connected()) {
 
@@ -734,7 +680,6 @@ void maintainConnections(
   }
 }
 
-
 // ====================================================
 // BLYNK RESYNC
 // ====================================================
@@ -746,10 +691,8 @@ void maintainBlynkSync(
   if (!Blynk.connected())
     return;
 
-
   if (allDataReceived)
     return;
-
 
   if (
     !syncTimedOut &&
@@ -764,7 +707,6 @@ void maintainBlynkSync(
     );
   }
 
-
   if (
     now - previousBlynkResync >=
     BLYNK_RESYNC_INTERVAL
@@ -772,11 +714,9 @@ void maintainBlynkSync(
   {
     previousBlynkResync = now;
 
-
     Serial.println(
       "Retrying Blynk data sync"
     );
-
 
     Blynk.syncVirtual(
       V0,
@@ -793,7 +733,6 @@ void maintainBlynkSync(
   }
 }
 
-
 // ====================================================
 // ALARM TIME
 // ====================================================
@@ -804,7 +743,6 @@ bool getAlarmSeconds(
 {
   if (alarmTime.length() == 0)
     return false;
-
 
   for (
     unsigned int i = 0;
@@ -821,10 +759,8 @@ bool getAlarmSeconds(
     }
   }
 
-
   long value =
     alarmTime.toInt();
-
 
   if (
     value < 0 ||
@@ -834,14 +770,11 @@ bool getAlarmSeconds(
     return false;
   }
 
-
   secondsOut =
     (int)value;
 
-
   return true;
 }
-
 
 void secondsToClock(
   int seconds,
@@ -863,15 +796,12 @@ void secondsToClock(
     return;
   }
 
-
   int hour =
     seconds / 3600;
-
 
   int minute =
     (seconds % 3600)
     / 60;
-
 
   snprintf(
     buffer,
@@ -881,7 +811,6 @@ void secondsToClock(
     minute
   );
 }
-
 
 // ====================================================
 // BUTTONS
@@ -897,10 +826,8 @@ void initializeButton(
     INPUT
   );
 
-
   int initial =
     digitalRead(pin);
-
 
   button.pin =
     pin;
@@ -918,7 +845,6 @@ void initializeButton(
     false;
 }
 
-
 void updateButton(
   Button &button,
   unsigned long now
@@ -926,12 +852,10 @@ void updateButton(
 {
   button.pressEvent = false;
 
-
   int raw =
     digitalRead(
       button.pin
     );
-
 
   if (
     raw !=
@@ -944,7 +868,6 @@ void updateButton(
     button.lastRawChange =
       now;
   }
-
 
   if (
     now - button.lastRawChange >=
@@ -959,7 +882,6 @@ void updateButton(
       button.stableState =
         raw;
 
-
       if (
         button.stableState ==
         BUTTON_PRESSED_STATE
@@ -972,7 +894,6 @@ void updateButton(
   }
 }
 
-
 bool buttonIsPressed(
   const Button &button
 )
@@ -981,7 +902,6 @@ bool buttonIsPressed(
     button.stableState ==
     BUTTON_PRESSED_STATE;
 }
-
 
 // ====================================================
 // BUZZER
@@ -994,14 +914,12 @@ void setBuzzerVolume(
   volume =
     clamp01(volume);
 
-
 #if PASSIVE_BUZZER
 
   uint32_t pwm =
     (uint32_t)(
       128.0 * volume
     );
-
 
   ledcWrite(
     BUZZER_PIN,
@@ -1020,14 +938,12 @@ void setBuzzerVolume(
 #endif
 }
 
-
 void silenceBuzzer()
 {
   setBuzzerVolume(
     0.0
   );
 }
-
 
 // ====================================================
 // ALARM PARAMETERS
@@ -1041,7 +957,6 @@ int getTotalAlarmBursts()
   );
 }
 
-
 unsigned long getAlarmBurstDuration()
 {
   return
@@ -1049,7 +964,6 @@ unsigned long getAlarmBurstDuration()
     max(1, duration)
     * 1000UL;
 }
-
 
 // ====================================================
 // START / STOP ALARM
@@ -1070,11 +984,8 @@ void startAlarmSequence(
   lastAlarmDateKey =
     dateKey;
 
-
-  // Reset smooth light waveform.
   lightBreathPhase = 0.0;
   previousLightBreathUpdate = now;
-
 
   Serial.println();
   Serial.println(
@@ -1105,7 +1016,6 @@ void startAlarmSequence(
   );
 }
 
-
 void stopAlarmSequence(
   const char *reason
 )
@@ -1113,10 +1023,8 @@ void stopAlarmSequence(
   if (!alarmSequenceActive)
     return;
 
-
   alarmSequenceActive = false;
   alarmBurstOn = false;
-
 
   ledcWrite(
     LIGHT_1_PIN,
@@ -1133,12 +1041,9 @@ void stopAlarmSequence(
     0
   );
 
-
   silenceBuzzer();
 
-
   lightBreathPhase = 0.0;
-
 
   Serial.print(
     "Alarm stopped: "
@@ -1148,7 +1053,6 @@ void stopAlarmSequence(
     reason
   );
 }
-
 
 // ====================================================
 // ALARM TRIGGER
@@ -1160,7 +1064,6 @@ void checkAlarmTrigger(
 {
   static unsigned long previousCheck = 0;
 
-
   if (
     now - previousCheck <
     250
@@ -1169,24 +1072,18 @@ void checkAlarmTrigger(
     return;
   }
 
-
   previousCheck = now;
-
 
   if (!alarmActive)
     return;
 
-
   if (!alarmDataReady())
     return;
-
 
   if (alarmSequenceActive)
     return;
 
-
   int targetSeconds;
-
 
   if (
     !getAlarmSeconds(
@@ -1197,9 +1094,7 @@ void checkAlarmTrigger(
     return;
   }
 
-
   struct tm timeInfo;
-
 
   if (
     !getLocalTime(
@@ -1211,18 +1106,15 @@ void checkAlarmTrigger(
     return;
   }
 
-
   int secondsFromMidnight =
     timeInfo.tm_hour * 3600 +
     timeInfo.tm_min * 60 +
     timeInfo.tm_sec;
 
-
   int dateKey =
     (timeInfo.tm_year + 1900)
     * 1000 +
     timeInfo.tm_yday;
-
 
   if (
     dateKey ==
@@ -1231,7 +1123,6 @@ void checkAlarmTrigger(
   {
     return;
   }
-
 
   if (
     secondsFromMidnight >=
@@ -1249,7 +1140,6 @@ void checkAlarmTrigger(
   }
 }
 
-
 // ====================================================
 // ALARM SEQUENCE
 // ====================================================
@@ -1261,7 +1151,6 @@ void updateAlarmSequence(
   if (!alarmSequenceActive)
     return;
 
-
   if (!alarmActive) {
 
     stopAlarmSequence(
@@ -1271,14 +1160,11 @@ void updateAlarmSequence(
     return;
   }
 
-
   unsigned long burstDuration =
     getAlarmBurstDuration();
 
-
   int totalBursts =
     getTotalAlarmBursts();
-
 
   // ==================================================
   // ACTIVE BURST
@@ -1309,7 +1195,6 @@ void updateAlarmSequence(
         alarmPhaseStart =
           now;
 
-
         ledcWrite(
           LIGHT_1_PIN,
           0
@@ -1325,12 +1210,10 @@ void updateAlarmSequence(
           0
         );
 
-
         silenceBuzzer();
       }
     }
   }
-
 
   // ==================================================
   // GAP BETWEEN REPEATS
@@ -1351,8 +1234,6 @@ void updateAlarmSequence(
       alarmPhaseStart =
         now;
 
-
-      // Restart breathing smoothly.
       lightBreathPhase =
         0.0;
 
@@ -1361,7 +1242,6 @@ void updateAlarmSequence(
     }
   }
 }
-
 
 // ====================================================
 // ALARM SEVERITY
@@ -1379,10 +1259,8 @@ double getAlarmSeverity(
     return 0.0;
   }
 
-
   unsigned long durationMs =
     getAlarmBurstDuration();
-
 
   double progress =
     (double)(
@@ -1391,22 +1269,18 @@ double getAlarmSeverity(
     /
     (double)durationMs;
 
-
   progress =
     clamp01(progress);
-
 
   double repeatBoost =
     currentAlarmBurst *
     0.15;
-
 
   return clamp01(
     progress * 0.85 +
     repeatBoost
   );
 }
-
 
 // ====================================================
 // LIGHT BREATH PERIOD
@@ -1423,24 +1297,15 @@ double getLightBreathPeriod(
   progress =
     clamp01(progress);
 
-
   if (progress <= 0.40) {
 
     double section =
       progress /
       0.40;
 
-
     return
-      4.0 +
-      (
-        1.0 -
-        4.0
-      )
-      *
-      section;
+      4.0 + (1.0 - 4.0) * section;
   }
-
 
   double section =
     (
@@ -1449,7 +1314,6 @@ double getLightBreathPeriod(
     )
     /
     0.60;
-
 
   return
     1.0 +
@@ -1461,9 +1325,8 @@ double getLightBreathPeriod(
     section;
 }
 
-
 // ====================================================
-// SMOOTH 3W LED BREATHING
+// SMOOTH 10W LED BREATHING
 // ====================================================
 
 void updateAlarmLights(
@@ -1489,45 +1352,28 @@ void updateAlarmLights(
     return;
   }
 
-
   unsigned long durationMs =
     getAlarmBurstDuration();
-
 
   unsigned long elapsed =
     now -
     alarmPhaseStart;
 
-
   double progress =
     (double)elapsed /
     (double)durationMs;
 
-
   progress =
     clamp01(progress);
-
-
-  // ==================================================
-  // BREATHING SPEED
-  // ==================================================
 
   double periodSeconds =
     getLightBreathPeriod(
       progress
     );
 
-
   double periodMs =
     periodSeconds *
     1000.0;
-
-
-  // ==================================================
-  // CONTINUOUS PHASE ACCUMULATION
-  //
-  // This prevents jumps as the period changes.
-  // ==================================================
 
   if (
     previousLightBreathUpdate == 0
@@ -1537,20 +1383,16 @@ void updateAlarmLights(
       now;
   }
 
-
   unsigned long deltaTime =
     now -
     previousLightBreathUpdate;
 
-
   previousLightBreathUpdate =
     now;
-
 
   lightBreathPhase +=
     (double)deltaTime /
     periodMs;
-
 
   while (
     lightBreathPhase >= 1.0
@@ -1558,17 +1400,6 @@ void updateAlarmLights(
   {
     lightBreathPhase -= 1.0;
   }
-
-
-  // ==================================================
-  // LOW -> HIGH -> LOW
-  //
-  // Smooth cosine wave:
-  //
-  // phase 0.0 = LOW
-  // phase 0.5 = HIGH
-  // phase 1.0 = LOW
-  // ==================================================
 
   double breathing =
     0.5 -
@@ -1579,40 +1410,23 @@ void updateAlarmLights(
       lightBreathPhase
     );
 
-
-  // ==================================================
-  // PEAK INTENSITY ALSO INCREASES WITH TIME
-  //
-  // Start:
-  //   30% of V6 maximum
-  //
-  // End:
-  //   100% of V6 maximum
-  // ==================================================
-
   double configuredMax =
     clamp01(
       intensityLgt
     );
-
 
   double peakFraction =
     0.30 +
     0.70 *
     progress;
 
-
   double peakIntensity =
     configuredMax *
     peakFraction;
 
-
-  // Bottom of each breath:
-  // 3% of configured maximum.
   double lowIntensity =
     configuredMax *
     0.03;
-
 
   if (
     lowIntensity >
@@ -1623,7 +1437,6 @@ void updateAlarmLights(
       peakIntensity;
   }
 
-
   double currentIntensity =
     lowIntensity +
     (
@@ -1633,26 +1446,22 @@ void updateAlarmLights(
     *
     breathing;
 
-
   uint32_t pwm =
     intensityToPWM(
       currentIntensity
     );
 
-
-  // Both 3W lights breathe together.
+  // SAME DRIVE BEHAVIOR AS YOUR WORKING VERSION
   ledcWrite(
     LIGHT_1_PIN,
     pwm
   );
-
 
   ledcWrite(
     LIGHT_2_PIN,
     pwm
   );
 }
-
 
 // ====================================================
 // BUZZER
@@ -1663,14 +1472,12 @@ void updateAlarmBuzzer(
   double severity
 )
 {
-  // First 10% is light only.
   if (severity < 0.10) {
 
     silenceBuzzer();
 
     return;
   }
-
 
   double soundSeverity =
     (
@@ -1680,25 +1487,21 @@ void updateAlarmBuzzer(
     /
     0.90;
 
-
   soundSeverity =
     clamp01(
       soundSeverity
     );
-
 
   double volume =
     0.20 +
     0.80 *
     soundSeverity;
 
-
   const unsigned long BEEP_TIME =
     160;
 
   const unsigned long SMALL_GAP =
     120;
-
 
   unsigned long longGap =
     1400 -
@@ -1707,12 +1510,10 @@ void updateAlarmBuzzer(
       soundSeverity
     );
 
-
   unsigned long patternLength =
     3 * BEEP_TIME +
     2 * SMALL_GAP +
     longGap;
-
 
   unsigned long t =
     (
@@ -1721,7 +1522,6 @@ void updateAlarmBuzzer(
     )
     %
     patternLength;
-
 
   bool beepOn =
 
@@ -1758,7 +1558,6 @@ void updateAlarmBuzzer(
         2 * SMALL_GAP
     );
 
-
   if (beepOn) {
 
     setBuzzerVolume(
@@ -1772,19 +1571,8 @@ void updateAlarmBuzzer(
   }
 }
 
-
 // ====================================================
 // FAN
-//
-// Reaches FULL SPEED after 10% of alarm duration.
-//
-// Example:
-//
-// duration 60 sec
-// fan reaches full at 6 sec
-//
-// duration 30 sec
-// fan reaches full at 3 sec
 // ====================================================
 
 void updateAlarmFan(
@@ -1805,38 +1593,29 @@ void updateAlarmFan(
     return;
   }
 
-
   unsigned long durationMs =
     getAlarmBurstDuration();
-
 
   unsigned long elapsed =
     now -
     alarmPhaseStart;
 
-
   double progress =
     (double)elapsed /
     (double)durationMs;
 
-
   progress =
     clamp01(progress);
 
-
-  // 0 -> 1 over first 10% of duration.
   double fanProgress =
     progress /
     0.10;
-
 
   fanProgress =
     clamp01(
       fanProgress
     );
 
-
-  // Smoothstep curve.
   double smoothFan =
     fanProgress *
     fanProgress *
@@ -1846,20 +1625,17 @@ void updateAlarmFan(
       fanProgress
     );
 
-
   uint32_t fanPWM =
     (uint32_t)(
       smoothFan *
       255.0
     );
 
-
   ledcWrite(
     FAN_PIN,
     fanPWM
   );
 }
-
 
 // ====================================================
 // OUTPUT CONTROL
@@ -1869,10 +1645,6 @@ void updateOutputs(
   unsigned long now
 )
 {
-  // ==================================================
-  // ACTIVE ALARM
-  // ==================================================
-
   if (
     alarmSequenceActive &&
     alarmBurstOn
@@ -1883,32 +1655,23 @@ void updateOutputs(
         now
       );
 
-
     updateAlarmLights(
       now,
       severity
     );
-
 
     updateAlarmBuzzer(
       now,
       severity
     );
 
-
     updateAlarmFan(
       now,
       severity
     );
 
-
     return;
   }
-
-
-  // ==================================================
-  // REPEAT GAP
-  // ==================================================
 
   if (alarmSequenceActive) {
 
@@ -1917,25 +1680,20 @@ void updateOutputs(
       0
     );
 
-
     ledcWrite(
       LIGHT_2_PIN,
       0
     );
-
 
     ledcWrite(
       FAN_PIN,
       0
     );
 
-
     silenceBuzzer();
-
 
     return;
   }
-
 
   // ==================================================
   // NORMAL ROOM LIGHTING
@@ -1944,10 +1702,8 @@ void updateOutputs(
   uint32_t light1PWM =
     0;
 
-
   uint32_t light2PWM =
     0;
-
 
   if (light1Active) {
 
@@ -1957,7 +1713,6 @@ void updateOutputs(
       );
   }
 
-
   if (light2Active) {
 
     light2PWM =
@@ -1966,28 +1721,23 @@ void updateOutputs(
       );
   }
 
-
   ledcWrite(
     LIGHT_1_PIN,
     light1PWM
   );
-
 
   ledcWrite(
     LIGHT_2_PIN,
     light2PWM
   );
 
-
   ledcWrite(
     FAN_PIN,
     0
   );
 
-
   silenceBuzzer();
 }
-
 
 // ====================================================
 // STATUS LEDS
@@ -1997,18 +1747,12 @@ void updateBoardLEDs(
   unsigned long now
 )
 {
-  // ==================================================
-  // RED / GREEN
-  // ALARM ENABLED STATE
-  // ==================================================
-
   digitalWrite(
     RED_LED_PIN,
     alarmActive
       ? LOW
       : HIGH
   );
-
 
   digitalWrite(
     GREEN_LED_PIN,
@@ -2017,22 +1761,15 @@ void updateBoardLEDs(
       : LOW
   );
 
-
-  // ==================================================
-  // FRESH BLYNK DATA CHASE
-  // ==================================================
-
   if (dataPatternActive) {
 
     unsigned long elapsed =
       now -
       dataPatternStart;
 
-
     int step =
       elapsed /
       DATA_PATTERN_STEP;
-
 
     if (
       step >=
@@ -2049,7 +1786,6 @@ void updateBoardLEDs(
         step %
         statusPatternLEDCount;
 
-
       for (
         int i = 0;
         i <
@@ -2065,15 +1801,9 @@ void updateBoardLEDs(
         );
       }
 
-
       return;
     }
   }
-
-
-  // ==================================================
-  // GPIO12 HEARTBEAT
-  // ==================================================
 
   bool heartbeat =
     (
@@ -2083,7 +1813,6 @@ void updateBoardLEDs(
     <
     100UL;
 
-
   digitalWrite(
     HEARTBEAT_LED_PIN,
     heartbeat
@@ -2091,15 +1820,9 @@ void updateBoardLEDs(
       : LOW
   );
 
-
-  // ==================================================
-  // GPIO13 WIFI
-  // ==================================================
-
   bool wifiConnected =
     WiFi.status() ==
     WL_CONNECTED;
-
 
   if (wifiConnected) {
 
@@ -2119,7 +1842,6 @@ void updateBoardLEDs(
       %
       2;
 
-
     digitalWrite(
       WIFI_LED_PIN,
       blink
@@ -2127,11 +1849,6 @@ void updateBoardLEDs(
         : LOW
     );
   }
-
-
-  // ==================================================
-  // GPIO17 BLYNK
-  // ==================================================
 
   if (!wifiConnected) {
 
@@ -2161,7 +1878,6 @@ void updateBoardLEDs(
       %
       2;
 
-
     digitalWrite(
       BLYNK_LED_PIN,
       blink
@@ -2169,11 +1885,6 @@ void updateBoardLEDs(
         : LOW
     );
   }
-
-
-  // ==================================================
-  // GPIO18 DATA STATE
-  // ==================================================
 
   if (!Blynk.connected()) {
 
@@ -2185,7 +1896,6 @@ void updateBoardLEDs(
     return;
   }
 
-
   if (allDataReceived) {
 
     digitalWrite(
@@ -2195,7 +1905,6 @@ void updateBoardLEDs(
 
     return;
   }
-
 
   if (!syncTimedOut) {
 
@@ -2207,7 +1916,6 @@ void updateBoardLEDs(
       %
       2;
 
-
     digitalWrite(
       DATA_LED_PIN,
       fastBlink
@@ -2215,16 +1923,12 @@ void updateBoardLEDs(
         : LOW
     );
 
-
     return;
   }
 
-
-  // Sync timed out -> double blink
   unsigned long phase =
     now %
     1500UL;
-
 
   bool doubleBlink =
     (
@@ -2238,7 +1942,6 @@ void updateBoardLEDs(
       phase < 370
     );
 
-
   digitalWrite(
     DATA_LED_PIN,
     doubleBlink
@@ -2246,7 +1949,6 @@ void updateBoardLEDs(
       : LOW
   );
 }
-
 
 // ====================================================
 // LCD
@@ -2260,11 +1962,6 @@ void renderLCD(
   char line0[32];
   char line1[32];
 
-
-  // ==================================================
-  // ALARM
-  // ==================================================
-
   if (alarmSequenceActive) {
 
     if (alarmBurstOn) {
@@ -2272,11 +1969,9 @@ void renderLCD(
       unsigned long total =
         getAlarmBurstDuration();
 
-
       unsigned long elapsed =
         now -
         alarmPhaseStart;
-
 
       unsigned long remaining =
 
@@ -2291,7 +1986,6 @@ void renderLCD(
 
         : 0;
 
-
       snprintf(
         line0,
         sizeof(line0),
@@ -2299,7 +1993,6 @@ void renderLCD(
         currentAlarmBurst + 1,
         getTotalAlarmBursts()
       );
-
 
       snprintf(
         line1,
@@ -2315,7 +2008,6 @@ void renderLCD(
         now -
         alarmPhaseStart;
 
-
       unsigned long remaining =
 
         elapsed <
@@ -2330,7 +2022,6 @@ void renderLCD(
 
         : 0;
 
-
       snprintf(
         line0,
         sizeof(line0),
@@ -2338,7 +2029,6 @@ void renderLCD(
         currentAlarmBurst + 2,
         getTotalAlarmBursts()
       );
-
 
       snprintf(
         line1,
@@ -2348,13 +2038,11 @@ void renderLCD(
       );
     }
 
-
     writeLCDLine(
       0,
       line0,
       force
     );
-
 
     writeLCDLine(
       1,
@@ -2362,14 +2050,8 @@ void renderLCD(
       force
     );
 
-
     return;
   }
-
-
-  // ==================================================
-  // BLYNK SYNC
-  // ==================================================
 
   if (
     Blynk.connected() &&
@@ -2379,20 +2061,17 @@ void renderLCD(
   {
     int count = 0;
 
-
     for (int i = 0; i < 10; i++) {
 
       if (receivedPins[i])
         count++;
     }
 
-
     snprintf(
       line0,
       sizeof(line0),
       "Blynk syncing..."
     );
-
 
     snprintf(
       line1,
@@ -2401,13 +2080,11 @@ void renderLCD(
       count
     );
 
-
     writeLCDLine(
       0,
       line0,
       force
     );
-
 
     writeLCDLine(
       1,
@@ -2415,23 +2092,15 @@ void renderLCD(
       force
     );
 
-
     return;
   }
-
-
-  // ==================================================
-  // HOME
-  // ==================================================
 
   if (showClockPage) {
 
     struct tm timeInfo;
 
-
     char currentTime[10] =
       "--:--:--";
-
 
     if (
       getLocalTime(
@@ -2450,15 +2119,12 @@ void renderLCD(
       );
     }
 
-
     bool wifi =
       WiFi.status() ==
       WL_CONNECTED;
 
-
     bool blynk =
       Blynk.connected();
-
 
     snprintf(
       line0,
@@ -2470,13 +2136,10 @@ void renderLCD(
       allDataReceived ? 1 : 0
     );
 
-
     int alarmSeconds;
-
 
     char alarmText[8] =
       "--:--";
-
 
     if (
       getAlarmSeconds(
@@ -2491,7 +2154,6 @@ void renderLCD(
       );
     }
 
-
     snprintf(
       line1,
       sizeof(line1),
@@ -2502,13 +2164,11 @@ void renderLCD(
         : "OFF"
     );
 
-
     writeLCDLine(
       0,
       line0,
       force
     );
-
 
     writeLCDLine(
       1,
@@ -2516,14 +2176,8 @@ void renderLCD(
       force
     );
 
-
     return;
   }
-
-
-  // ==================================================
-  // BLYNK DATA PAGES
-  // ==================================================
 
   switch (currentPage) {
 
@@ -2546,7 +2200,6 @@ void renderLCD(
 
       break;
 
-
     case 1:
 
       snprintf(
@@ -2565,7 +2218,6 @@ void renderLCD(
       );
 
       break;
-
 
     case 2:
 
@@ -2586,7 +2238,6 @@ void renderLCD(
 
       break;
 
-
     case 3:
 
       snprintf(
@@ -2603,7 +2254,6 @@ void renderLCD(
       );
 
       break;
-
 
     case 4:
 
@@ -2622,7 +2272,6 @@ void renderLCD(
 
       break;
 
-
     case 5:
 
       snprintf(
@@ -2639,7 +2288,6 @@ void renderLCD(
       );
 
       break;
-
 
     case 6:
 
@@ -2658,7 +2306,6 @@ void renderLCD(
 
       break;
 
-
     case 7:
 
       snprintf(
@@ -2675,7 +2322,6 @@ void renderLCD(
       );
 
       break;
-
 
     case 8:
 
@@ -2694,7 +2340,6 @@ void renderLCD(
 
       break;
 
-
     case 9:
     {
       snprintf(
@@ -2703,9 +2348,7 @@ void renderLCD(
         "V9 Alarm Time"
       );
 
-
       int seconds;
-
 
       if (
         getAlarmSeconds(
@@ -2715,13 +2358,11 @@ void renderLCD(
       {
         char timeText[8];
 
-
         secondsToClock(
           seconds,
           timeText,
           sizeof(timeText)
         );
-
 
         snprintf(
           line1,
@@ -2743,7 +2384,6 @@ void renderLCD(
       break;
     }
 
-
     default:
 
       snprintf(
@@ -2751,7 +2391,6 @@ void renderLCD(
         sizeof(line0),
         "Data"
       );
-
 
       snprintf(
         line1,
@@ -2762,13 +2401,11 @@ void renderLCD(
       break;
   }
 
-
   writeLCDLine(
     0,
     line0,
     force
   );
-
 
   writeLCDLine(
     1,
@@ -2776,7 +2413,6 @@ void renderLCD(
     force
   );
 }
-
 
 // ====================================================
 // LCD UPDATE
@@ -2794,14 +2430,11 @@ void updateLCD(
     return;
   }
 
-
   previousLCDUpdate =
     now;
 
-
   bool force =
     false;
-
 
   if (
     now - previousLCDForceUpdate >=
@@ -2815,13 +2448,11 @@ void updateLCD(
       true;
   }
 
-
   renderLCD(
     now,
     force
   );
 }
-
 
 // ====================================================
 // LCD RECOVERY
@@ -2839,10 +2470,8 @@ void maintainLCD(
     return;
   }
 
-
   previousLCDRecovery =
     now;
-
 
   lcd.init();
 
@@ -2858,7 +2487,6 @@ void maintainLCD(
     0;
 }
 
-
 // ====================================================
 // BUTTON ACTIONS
 // ====================================================
@@ -2872,22 +2500,15 @@ void processButtons(
     now
   );
 
-
   updateButton(
     button2,
     now
   );
 
-
   bool bothPressed =
     buttonIsPressed(button1)
     &&
     buttonIsPressed(button2);
-
-
-  // ==================================================
-  // BOTH HELD 2 SEC -> RESET
-  // ==================================================
 
   if (bothPressed) {
 
@@ -2900,7 +2521,6 @@ void processButtons(
         now;
     }
 
-
     if (
       now - bothButtonsStart >=
       RESET_HOLD_TIME
@@ -2912,76 +2532,52 @@ void processButtons(
         true
       );
 
-
       writeLCDLine(
         1,
         "Please wait",
         true
       );
 
-
       ledcWrite(
         LIGHT_1_PIN,
         0
       );
-
 
       ledcWrite(
         LIGHT_2_PIN,
         0
       );
 
-
       ledcWrite(
         FAN_PIN,
         0
       );
 
-
       silenceBuzzer();
 
-
       delay(200);
-
 
       ESP.restart();
     }
 
-
     return;
   }
 
-
   bothButtonsHolding =
     false;
-
-
-  // ==================================================
-  // BUTTON 1
-  // CYCLE V0-V9
-  // ==================================================
 
   if (button1.pressEvent) {
 
     showClockPage =
       false;
 
-
     currentPage++;
-
 
     if (currentPage > 9)
       currentPage = 0;
 
-
     invalidateLCDCache();
   }
-
-
-  // ==================================================
-  // BUTTON 2
-  // DISMISS / HOME
-  // ==================================================
 
   if (button2.pressEvent) {
 
@@ -2997,12 +2593,10 @@ void processButtons(
       showClockPage =
         !showClockPage;
 
-
       invalidateLCDCache();
     }
   }
 }
-
 
 // ====================================================
 // INITIAL NETWORK
@@ -3016,38 +2610,31 @@ void initializeNetwork()
     true
   );
 
-
   writeLCDLine(
     1,
     "Please wait...",
     true
   );
 
-
   WiFi.mode(
     WIFI_STA
   );
-
 
   WiFi.setAutoReconnect(
     true
   );
 
-
   Blynk.config(
     BLYNK_AUTH_TOKEN
   );
-
 
   WiFi.begin(
     ssid,
     pass
   );
 
-
   unsigned long start =
     millis();
-
 
   while (
     WiFi.status() != WL_CONNECTED &&
@@ -3061,7 +2648,6 @@ void initializeNetwork()
     delay(20);
   }
 
-
   if (
     WiFi.status() ==
     WL_CONNECTED
@@ -3070,11 +2656,9 @@ void initializeNetwork()
     wifiWasConnected =
       true;
 
-
     Serial.println(
       "Initial WiFi connected"
     );
-
 
     writeLCDLine(
       0,
@@ -3082,16 +2666,13 @@ void initializeNetwork()
       true
     );
 
-
     writeLCDLine(
       1,
       "Connecting Blynk",
       true
     );
 
-
     configureNTP();
-
 
     if (
       Blynk.connect(3000)
@@ -3116,13 +2697,11 @@ void initializeNetwork()
       "Initial WiFi failed"
     );
 
-
     Serial.println(
       "Continuing offline"
     );
   }
 }
-
 
 // ====================================================
 // SETUP
@@ -3133,7 +2712,6 @@ void setup()
   Serial.begin(
     115200
   );
-
 
   // ==================================================
   // STATUS LEDS FIRST
@@ -3169,7 +2747,6 @@ void setup()
     OUTPUT
   );
 
-
   digitalWrite(
     RED_LED_PIN,
     HIGH
@@ -3200,7 +2777,6 @@ void setup()
     LOW
   );
 
-
   // ==================================================
   // LCD
   // ==================================================
@@ -3210,19 +2786,15 @@ void setup()
     SCL_PIN
   );
 
-
   Wire.setClock(
     100000
   );
-
 
   lcd.init();
 
   lcd.backlight();
 
-
   invalidateLCDCache();
-
 
   writeLCDLine(
     0,
@@ -3230,17 +2802,14 @@ void setup()
     true
   );
 
-
   writeLCDLine(
     1,
     "Starting...",
     true
   );
 
-
   previousLCDRecovery =
     millis();
-
 
   // ==================================================
   // BUTTONS
@@ -3251,15 +2820,13 @@ void setup()
     BUTTON_1_PIN
   );
 
-
   initializeButton(
     button2,
     BUTTON_2_PIN
   );
 
-
   // ==================================================
-  // 3W LIGHT PWM
+  // 10W LED / MX1508 PWM
   // ==================================================
 
   ledcAttach(
@@ -3268,25 +2835,21 @@ void setup()
     LIGHT_PWM_RESOLUTION
   );
 
-
   ledcAttach(
     LIGHT_2_PIN,
     LIGHT_PWM_FREQUENCY,
     LIGHT_PWM_RESOLUTION
   );
 
-
   ledcWrite(
     LIGHT_1_PIN,
     0
   );
 
-
   ledcWrite(
     LIGHT_2_PIN,
     0
   );
-
 
   // ==================================================
   // FAN PWM
@@ -3298,12 +2861,10 @@ void setup()
     FAN_PWM_RESOLUTION
   );
 
-
   ledcWrite(
     FAN_PIN,
     0
   );
-
 
   // ==================================================
   // BUZZER
@@ -3317,7 +2878,6 @@ void setup()
     BUZZER_PWM_RESOLUTION
   );
 
-
   ledcWrite(
     BUZZER_PIN,
     0
@@ -3330,7 +2890,6 @@ void setup()
     OUTPUT
   );
 
-
   digitalWrite(
     BUZZER_PIN,
     LOW
@@ -3338,13 +2897,11 @@ void setup()
 
 #endif
 
-
   // ==================================================
   // NETWORK
   // ==================================================
 
   initializeNetwork();
-
 
   // ==================================================
   // READY
@@ -3355,7 +2912,6 @@ void setup()
     "System ready",
     true
   );
-
 
   if (
     WiFi.status() ==
@@ -3380,12 +2936,9 @@ void setup()
     );
   }
 
-
   delay(500);
 
-
   invalidateLCDCache();
-
 
   Serial.println();
   Serial.println(
@@ -3401,7 +2954,6 @@ void setup()
   );
 }
 
-
 // ====================================================
 // LOOP
 // ====================================================
@@ -3411,46 +2963,37 @@ void loop()
   unsigned long now =
     millis();
 
-
   maintainConnections(
     now
   );
-
 
   maintainBlynkSync(
     now
   );
 
-
   processButtons(
     now
   );
-
 
   checkAlarmTrigger(
     now
   );
 
-
   updateAlarmSequence(
     now
   );
-
 
   updateOutputs(
     now
   );
 
-
   updateBoardLEDs(
     now
   );
 
-
   updateLCD(
     now
   );
-
 
   maintainLCD(
     now
