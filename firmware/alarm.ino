@@ -1,7 +1,11 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Doruk
+
 #define BLYNK_TEMPLATE_ID "TMPL60t_yvDvl"
 #define BLYNK_TEMPLATE_NAME "Quickstart Template"
+#define BLYNK_AUTH_TOKEN "" // Enter your token
 
-#define BLYNK_PRINT Serial
+#define BLYNK_PRINT Serial 
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -14,8 +18,8 @@
 // WIFI
 // ====================================================
 
-char ssid[] = "";
-char pass[] = "";
+char ssid[] = ""; // Enter your WIFI name
+char pass[] = ""; // Enter your WIFI password
 
 bool wifiWasConnected = false;
 
