@@ -4,7 +4,11 @@ An ESP32-S3 based alarm system that combines **high-power light, airflow, and an
 
 The system includes Blynk remote control, an I2C LCD, physical buttons, status LEDs, custom CAD, and an electrical schematic.
 
-![Prototype](media/photo_1.jpg)
+<p align="center">
+  <img src="media/photo_1.jpg" width="300">
+  <img src="media/photo_2.jpg" width="300">
+  <img src="media/photo_3.jpg" width="300">
+</p>
 
 ## Features
 
@@ -37,6 +41,7 @@ Main components:
 - 16x2 I2C LCD
 - Two pushbuttons
 - Status LEDs
+- MOSFETs
 
 Electrical schematic:
 
